@@ -6,6 +6,7 @@ stamen.mean<-mean(stamen.length.mm)
 stamen.stv<-sd(stamen.length.mm)
 stamen.model<-rnorm(5000,stamen.mean,stamen.stv)
 plot(density(stamen.model))
+#gives a density curve
 
 stamen.SE<-stamen.stv/sqrt(53)
 #[1] 2.833906
