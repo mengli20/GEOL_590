@@ -1,0 +1,16 @@
+Package: rainunits
+Title: Convert units in to mm 
+Version: 0.0.0.9000
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: This package can convert units of mm to units of inches. It may be useful for rainfall data from met stations. 
+Depends: R (>= 3.3.2)
+License: CCO
+Encoding: UTF-8
+LazyData: true
+Suggests: dplyr,
+    knitr,
+    rmarkdown,
+    testthat
+RoxygenNote: 6.0.1
+Imports: dplyr
+VignetteBuilder: knitr

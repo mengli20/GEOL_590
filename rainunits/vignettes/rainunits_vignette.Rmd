@@ -1,0 +1,17 @@
+---
+title: "Rain units"
+author: "Marie English"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rainunits_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Package purpose 
+
+This package allows you to convert the units of rainfall data from a met station. Enter a daily rainfall value in mm and it will return that value in units of inches. Many times, met stations record the values in metric units, but many growers discuss rain in inches so it is important to have an easy way to go back and forth. 
+
+
+
