@@ -1,0 +1,57 @@
+---
+title: "Task 8"
+author: "Marie English"
+date: "March 20, 2017"
+output: github_document 
+---
+
+```{r include= FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library (dplyr)
+library (lazyeval) #Lazyeval helps get around R looking for column1 in the wrong place
+library (microbenchmark) #Times how quickly a function executes
+```
+
+## Function 1 
+Create a function that adds two user specified columns together.
+
+```{r message= FALSE, warning= FALSE}
+
+Column_summer3 <- function(df, new_col_name, column1, column2) {
+  if (is.data.frame(df)== FALSE) {
+   warning ("Input is not a dataframe")} #Ensure that input is a dataframe or a warning is issued
+  
+  mutate_call <- lazyeval::interp(~ a + b, a = as.name (column1), b = as.name (column2))
+  df %>% mutate_(.dots = setNames(list(mutate_call), new_col_name))
+  }
+  
+#Test the function:
+Column_summer3(mtcars, 'wtmpg', 'mpg', 'wt')
+```
+
+## Function 2
+Create a for loop similar to the sum function. Compare the function to the sum () function in base R. 
+
+```{r message= FALSE, warning= FALSE}
+ my_sum <- function(x) {
+    total <- 0 
+    n<- length (x)
+    for (i in 1:n) { 
+      total = total +x[i]
+    }
+  total
+    }
+  
+#testing the function
+  myvec<- c(1,2,3,4,5)
+  my_sum(myvec)
+  
+#Comparison of the function we created to the existing sum function 
+  test.vec <- 1:10^4
+  microbenchmark::microbenchmark(
+  my_sum(test.vec),
+  sum(test.vec))
+  
+```
+
+The microbenchmark results show that the sum function in base R is much faster than the loop that can be created to execute the same function (my_sum). 
