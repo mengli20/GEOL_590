@@ -1,0 +1,256 @@
+---
+title: "Experiment 1 figures"
+author: "English"
+date: "7/6/2017"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introduction
+
+Plastic agricultural mulches provide weed control, moisture retention, temperature optimization, and decreased erosion. Because conventional mulches are composed of polyethylene, a poorly biodegradable plastic, they often end up in landfills after harvest. A more sustainable alternative is the use of biodegradable plastic mulches (BDMs) which, after being tilled into the soil subsequent to service life, degrade into carbon dioxide, water, and soil organic matter.  
+
+
+However, the role of temperature in the biodegradation of these materials is not well known. We conducted a manipulative incubation experiment to look at in situ biodegradability of a mulch films: a starch/polyester blend (BioAgri). They were kept at different temperatures (10, 20, and 30°C) and the evolution of CO2 was measured biweekly over 16 weeks to monitor the time course of biodegradation. The influence of temperature on the rate of degradation for biodegradable mulches could help determine the impact of climate and environment on microbial assimilation.
+
+# Methods 
+
+CO2 evolution was measured every 2 weeks by sampling the headspace and measuring CO2 concentration on an infrared gas analyzer. 
+At t=0 and t=16 weeks total organic carbon (TOC) and bulk soil carbon isotopic signature were measured using Cavity Ring-Down Spectroscopy and microbial biomass and EOC were measured using the chloroform extraction method.
+
+
+# Results 
+
+<br>
+  <br>
+
+### DOC 
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+
+library(tidyverse)
+library(readr)
+library (ggplot2)
+library (knitr)
+
+EXP1DOC<-read_csv("../data/exp1docmbc.csv")
+
+#DOC table
+EXP1DOC_2<- EXP1DOC %>%
+  group_by (Mulch,Temp)  %>%
+  summarise (avg = mean (DOC), n = length(DOC), sd = sd(DOC), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+
+kable(EXP1DOC_2)
+
+
+
+#4 plots of DOC (each mulch with each column a different temperature)
+EXP1DOC_plot<- EXP1DOC_2 %>%
+  ggplot(aes(x= Temp, y= avg)) + 
+  geom_bar(stat = "identity", fill="dodgerblue3") + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab("DOC ug-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  theme (
+    axis.text = element_text(size = 8)) + 
+  facet_wrap(~Mulch)
+plot(EXP1DOC_plot)
+
+```
+<br>
+  <br>
+
+### MBC
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+
+#MBC table
+EXP1MBC_2<- EXP1DOC %>%
+  group_by (Mulch,Temp)  %>%
+  summarise (avg = mean (MBC), n = length(MBC), sd = sd(MBC), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+kable(EXP1MBC_2)
+
+#MBC plot
+EXP1MBC_plot<- EXP1MBC_2 %>%
+  ggplot(aes(x= Temp, y= avg)) + 
+  geom_bar(stat = "identity", fill="dodgerblue") + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab("MBC ug-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  theme (
+    axis.text = element_text(size = 8)) + 
+  facet_wrap(~Mulch)
+EXP1MBC_plot
+
+
+```
+<br>
+  <br>
+
+### TOC
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
+
+EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
+
+#TOC table
+EXP1TOC_2<- EXP1TOC %>%
+  group_by (Mulch,Temp)  %>%
+  summarise (avg = mean (TOC), n = length(TOC), sd = sd(TOC), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+kable(EXP1TOC_2) 
+
+#1 plots of TOC 
+EXP1TOC_plot<- EXP1TOC_2 %>%
+  ggplot(aes(x= Temp, y= avg)) + 
+  geom_bar(stat = "identity", fill="coral1") + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab("TOC mg-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  theme (
+    axis.text = element_text(size = 8))+
+  facet_wrap(~Mulch)
+EXP1TOC_plot
+
+
+
+```
+<br>
+  <br>
+  
+### d13C 
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+
+EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
+
+EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
+
+#d13C table
+EXP1d13C_2<- EXP1TOC %>%
+  group_by (Mulch,Temp)  %>%
+  summarise (avg = mean (d13C), n = length(d13C), sd = sd(d13C), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+kable(EXP1d13C_2)
+
+EXP1d13C_plot<- EXP1d13C_2 %>%
+  ggplot(aes(x= Mulch, y= avg, colour = Temp)) + 
+  geom_point () +
+  #geom_bar(stat = "identity", fill="coral3") + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab("d13C\n")+ xlab("\nTreatment") +
+  scale_fill_discrete() +
+  theme (
+    axis.text = element_text(size = 8)) 
+EXP1d13C_plot
+
+
+
+```
+
+<br>
+  <br>
+  
+### CO2 respiration 
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+co2evol<-read_csv("../data/redoco2evolved4.csv", col_types = cols(
+  meday = col_date("%m/%d/%y")))
+
+#30C 
+co2evol_30<- co2evol %>%
+  group_by (memulch, metemp, meday)  %>%
+  filter (metemp == "30") %>%
+  summarise (avg = mean (meco2), n = length(meco2), sd = sd(meco2), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se) %>%
+  ggplot(aes(meday,avg, colour = memulch)) + 
+  geom_point() + geom_line() +
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylim (0, 1250) +
+  ylab(expression("Cumulative CO"[2]*~mu*"g-C/g-Dry soil"))+ xlab("\nDate") +
+  scale_color_discrete(name = "Treatment", labels = c("BioAgri","Cellulose", "No mulch", "PLA/PHA")) + 
+  theme (
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size= 12),
+    axis.title.x = element_text(size= 14),  
+    axis.title.y = element_text(size= 14), 
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 12))
+co2evol_30
+
+
+#20C 
+co2evol_20<- co2evol %>%
+  group_by (memulch, metemp, meday)  %>%
+  filter (metemp == "20") %>%
+  summarise (avg = mean (meco2), n = length(meco2), sd = sd(meco2), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se) %>%
+  ggplot(aes(meday,avg, colour = memulch)) + 
+  geom_point() + geom_line() +
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylim (0, 1250) +
+  ylab(expression("Cumulative CO"[2]*~mu*"g-C/g-Dry soil"))+ xlab("\nDate") +
+  scale_color_discrete(name = "Treatment", labels = c("BioAgri","Cellulose", "No mulch", "PLA/PHA")) +
+  theme (
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size= 12),
+      axis.title.x = element_text(size= 14),  
+      axis.title.y = element_text(size= 14), 
+      legend.title = element_text(size = 12),
+      legend.text = element_text(size = 12))
+co2evol_20
+
+co2evol_10<- co2evol %>%
+  group_by (memulch, metemp, meday)  %>%
+  filter (metemp == "10") %>%
+  summarise (avg = mean (meco2), n = length(meco2), sd = sd(meco2), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se) %>%
+  ggplot(aes(meday,avg, colour = memulch)) + 
+  geom_point() + geom_line() +
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab(expression("Cumulative CO"[2]*~mu*"g-C/g-Dry soil"))+ xlab("\nDate") +
+  scale_color_discrete(name = "Treatment", labels = c("BioAgri","Cellulose", "No mulch", "PLA/PHA")) +
+    theme (
+      axis.text.x = element_text(size = 12),
+      axis.text.y = element_text(size= 12),
+      axis.title.x = element_text(size= 14),  
+      axis.title.y = element_text(size= 14), 
+      legend.title = element_text(size = 12),
+      legend.text = element_text(size = 12))
+co2evol_10
+
+
+```
+<br>
+  <br>
+  
+### Enzymes
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+EXP1ENZ<-read_csv("../data/exp1enz.csv")
+
+EXP1ENZ$Temp <- as.character(EXP1ENZ$Temp)
+
+#Enzyme table
+EXP1ENZ_2<- EXP1ENZ %>%
+  group_by (Mulch,Temp, Enzyme)  %>%
+  summarise (avg = mean (Activity), n = length(Activity), sd = sd(Activity), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+
+#1 plots of ENZYMES 
+EXP1ENZ_plot<- EXP1ENZ_2 %>%
+  ggplot(aes(x= Mulch, y= avg, fill = Temp)) + 
+  geom_bar(stat = "identity", position=position_dodge()) + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), position=position_dodge(0.9), width=0.2) +
+  ylab("Activity\n")+ xlab("\nMulch") +
+  theme (
+    axis.text = element_text(size = 8))+
+  facet_wrap(~Enzyme, scales = "free_y")
+EXP1ENZ_plot
+
+```
+
