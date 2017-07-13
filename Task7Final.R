@@ -20,7 +20,7 @@ print (outliers_ws)
 #Create a dataframe where wind speeds greater than 205mph are removed 
 
 nycflights2<- nycflights13::weather %>%
-  filter (wind_speed < 205)
+  filter (wind_speed < 250)
 nycflights2
 
 #See how many points are removed: compare with weather, 4 outliers removed 
@@ -30,31 +30,22 @@ nycflights2
 #2 What direction has the highest median speed at each airport?
 # Make a table and a plot of median wind speed by direction, for each airport. 
 
-median_ws<- nycflights2 %>%
+#Table of median wind speed by direction, for earch airport 
+median.ws<- nycflights2 %>%
   group_by (origin, wind_dir) %>%
-  summarise (Median = (median(wind_speed, na.rm= TRUE))) %>%
-  arrange (desc(Median))
-median_ws
+  summarise (medianwind = (median(wind_speed, na.rm= TRUE)))
+median.ws
 
-max_median_LGA <- median_ws  %>%
-  filter (origin == "LGA") %>%
-  arrange (desc(Median))
-max_median_LGA
-
-max_median_EWR <- median_ws  %>%
-  filter (origin == "EWR") %>%
-  arrange (desc(Median))
-max_median_EWR
-
-max_median_JFK <- median_ws  %>%
-  filter (origin == "JFK") %>%
-  arrange (desc(Median))
-max_median_JFK 
-
-plot1 <- ggplot(median_ws, aes (origin,)) + 
+#Plot of median wind speed by direction, for earch airport 
+plotws<-ggplot(median.ws, aes (wind_dir, medianwind)) + 
   geom_point() +
-  print(plot1)
+  facet_wrap(~origin)
+print (plotws)
 
+#Directions of the highest median wind speeds at each airport: 
+median.ws.max <- median.ws %>%
+  filter (medianwind == max (medianwind))
+median.ws.max 
 
 ##################################################
 
@@ -78,7 +69,8 @@ flights1
 head(flights)
 ?nycflights13::flights
 
-
+length (flights)
+?flights
 flights2 <- nycflights13::flights %>%
   filter (origin == "EWR") %>%
   select (flight, month, carrier)  %>%
@@ -101,7 +93,6 @@ bbn1 <- babynames::babynames %>%
 bbn1
 
 # Make a plot of their frequency (prop) since 1880. 
-#(This may require two separate piped statements).
 
 bbn1_n<- inner_join(bbn1, babynames::babynames) %>%
   ggplot (aes (x= year, y= prop, colour = name)) + 
@@ -144,5 +135,19 @@ bbn_4names <- bbn_2014 %>%
 bbn_4names
 
 ###############################################
+#7: Create your own: Plot inches of rain per month in JFK 
 
-#7 Create your own. 
+rainydaysplot <- nycflights13::weather %>%
+  filter (origin == "JFK") %>%
+  select (year, month, day, hour, precip) %>%
+  filter (precip > 0) %>%
+  group_by (month)  %>%
+  summarise (monthlyprecip= sum(precip))  %>%
+  ggplot (aes(month, monthlyprecip)) +
+  geom_point () + 
+  ylab("Precipitation (in)")+ xlab("Month")
+
+print (rainydaysplot)
+
+
+
