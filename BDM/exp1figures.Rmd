@@ -2,7 +2,7 @@
 title: "Experiment 1 figures"
 author: "English"
 date: "7/6/2017"
-output: github_document
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
