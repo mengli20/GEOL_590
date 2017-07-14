@@ -1,8 +1,8 @@
 ---
 title: "Experiment 1 figures"
 author: "English"
-date: "7/6/2017"
-output: word_document
+date: "7/14/2017"
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -14,8 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Plastic agricultural mulches provide weed control, moisture retention, temperature optimization, and decreased erosion. Because conventional mulches are composed of polyethylene, a poorly biodegradable plastic, they often end up in landfills after harvest. A more sustainable alternative is the use of biodegradable plastic mulches (BDMs) which, after being tilled into the soil subsequent to service life, degrade into carbon dioxide, water, and soil organic matter.  
 
-
 However, the role of temperature in the biodegradation of these materials is not well known. We conducted a manipulative incubation experiment to look at in situ biodegradability of a mulch films: a starch/polyester blend (BioAgri). They were kept at different temperatures (10, 20, and 30°C) and the evolution of CO2 was measured biweekly over 16 weeks to monitor the time course of biodegradation. The influence of temperature on the rate of degradation for biodegradable mulches could help determine the impact of climate and environment on microbial assimilation.
+
+### Importance 
+
+* Composition of the mulches - quality of the carbon addition and how this affects its temp. sensitivity 
+* Mulch materials have some effect on the temperature sensitivity of microbial metabolism 
+* Important to limit residuals of plastics, what temperature is needed to prevent this (Brodhagen, 2016)
+* USDA recommends N additions when using organic mulche covers, however they do not take into account temperature sensitivies of the mulches. 
 
 # Methods 
 
@@ -25,10 +31,15 @@ At t=0 and t=16 weeks total organic carbon (TOC) and bulk soil carbon isotopic s
 
 # Results 
 
-<br>
-  <br>
 
 ### DOC 
+
+* Red line = DOC at t=0 
+* Axes are free to vary because large range
+* BioAgri and PLA/PHA saw a decrease in DOC over 16 weeks
+* More DOC, peptides, and carbs formed from high-quality litter. Most low-quality litter (BioAgri and PLA/PHA) lost as CO2 (Cotrufo, MEMS)
+* No temperature sensitivity (maybe in control and cellulose)
+* Cellulose has much higher DOC than all other treatments 
 
 ```{r echo= FALSE, message= FALSE, warning= FALSE}
 
@@ -37,7 +48,7 @@ library(readr)
 library (ggplot2)
 library (knitr)
 
-EXP1DOC<-read_csv("../data/exp1docmbc.csv")
+EXP1DOC<-read_csv("../data/exp1docmbc2.csv")
 
 #DOC table
 EXP1DOC_2<- EXP1DOC %>%
@@ -45,26 +56,32 @@ EXP1DOC_2<- EXP1DOC %>%
   summarise (avg = mean (DOC), n = length(DOC), sd = sd(DOC), 
              se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
 
-kable(EXP1DOC_2)
-
+#kable(EXP1DOC_2)
 
 
 #4 plots of DOC (each mulch with each column a different temperature)
 EXP1DOC_plot<- EXP1DOC_2 %>%
   ggplot(aes(x= Temp, y= avg)) + 
+  geom_hline(yintercept = 48.98, col = "red") +
   geom_bar(stat = "identity", fill="dodgerblue3") + 
   geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
-  ylab("DOC ug-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  ylab("DOC ug-C/ g-Dry soil\n")+ xlab("\nTreatment") +
   theme (
     axis.text = element_text(size = 8)) + 
-  facet_wrap(~Mulch)
-plot(EXP1DOC_plot)
+  facet_wrap(~Mulch , scales = "free_y")
+plot (EXP1DOC_plot)
 
 ```
 <br>
   <br>
 
 ### MBC
+
+* Red line = MBC at t=0 
+* Axes are all the same 
+* MBC increased over the 16 weeks for all treatments 
+* Large standard errors 
+* 30-35% of decomposed C becomes biomass, 2/3 lost to CO2
 
 ```{r echo= FALSE, message= FALSE, warning= FALSE}
 
@@ -73,48 +90,49 @@ EXP1MBC_2<- EXP1DOC %>%
   group_by (Mulch,Temp)  %>%
   summarise (avg = mean (MBC), n = length(MBC), sd = sd(MBC), 
              se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
-kable(EXP1MBC_2)
+#kable(EXP1MBC_2) #Makes a nice table using knittr 
 
 #MBC plot
 EXP1MBC_plot<- EXP1MBC_2 %>%
   ggplot(aes(x= Temp, y= avg)) + 
+  geom_hline(yintercept = 17.83, col = "red") +
   geom_bar(stat = "identity", fill="dodgerblue") + 
   geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
-  ylab("MBC ug-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  ylab("MBC ug-C/ g-Dry soil\n")+ xlab("\nTreatment") +
   theme (
     axis.text = element_text(size = 8)) + 
-  facet_wrap(~Mulch)
-EXP1MBC_plot
+  facet_wrap(~Mulch) #, scales = "free_y") 
+plot (EXP1MBC_plot)
 
 
 ```
 <br>
   <br>
 
-### TOC
+
 
 ```{r echo= FALSE, message= FALSE, warning= FALSE}
-EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
+# EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
 
-EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
+# EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
 
-#TOC table
-EXP1TOC_2<- EXP1TOC %>%
-  group_by (Mulch,Temp)  %>%
-  summarise (avg = mean (TOC), n = length(TOC), sd = sd(TOC), 
-             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
-kable(EXP1TOC_2) 
+### TOC table
+# EXP1TOC_2<- EXP1TOC %>%
+#   group_by (Mulch,Temp)  %>%
+#   summarise (avg = mean (TOC), n = length(TOC), sd = sd(TOC), 
+#              se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+#kable(EXP1TOC_2) 
 
 #1 plots of TOC 
-EXP1TOC_plot<- EXP1TOC_2 %>%
-  ggplot(aes(x= Temp, y= avg)) + 
-  geom_bar(stat = "identity", fill="coral1") + 
-  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
-  ylab("TOC mg-C/ g-Dry soil\n")+ xlab("\nTemperature") +
-  theme (
-    axis.text = element_text(size = 8))+
-  facet_wrap(~Mulch)
-EXP1TOC_plot
+#EXP1TOC_plot<- EXP1TOC_2 %>%
+#  ggplot(aes(x= Temp, y= avg)) + 
+#  geom_bar(stat = "identity", fill="coral1") + 
+#  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+#  ylab("TOC mg-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+#  theme (
+#    axis.text = element_text(size = 8))+
+#  facet_wrap(~Mulch)
+# EXP1TOC_plot
 
 
 
@@ -122,31 +140,106 @@ EXP1TOC_plot
 <br>
   <br>
   
-### d13C 
+### TOC
+
+* Change in TOC after 16 weeks 
 
 ```{r echo= FALSE, message= FALSE, warning= FALSE}
 
-EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
+#Graph of TOC values subtracted from beginning to end 
 
-EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
+EXP1TOC0<-read_csv("../data/exp1tocd13c_t0.csv")
 
-#d13C table
-EXP1d13C_2<- EXP1TOC %>%
+#EXP1TOC0 #show this in markdown
+
+#TOC table
+EXP1TOC0_2<- EXP1TOC0 %>%
   group_by (Mulch,Temp)  %>%
-  summarise (avg = mean (d13C), n = length(d13C), sd = sd(d13C), 
+  summarise (avg = mean (TOC0), n = length(TOC0), sd = sd(TOC0), 
              se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
-kable(EXP1d13C_2)
+ # EXP1TOC0_2 #show this in markdown 
 
-EXP1d13C_plot<- EXP1d13C_2 %>%
-  ggplot(aes(x= Mulch, y= avg, colour = Temp)) + 
-  geom_point () +
-  #geom_bar(stat = "identity", fill="coral3") + 
+#to make temp plot not continuous:
+
+EXP1TOC0_2$Temp <- as.character(EXP1TOC0_2$Temp)
+
+#1 plots of TOC with t=0 value subtracted
+EXP1TOC0_plot<- EXP1TOC0_2 %>%
+  ggplot(aes(x= Temp, y= avg)) + 
+  geom_bar(stat = "identity", fill="coral1") + 
   geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
-  ylab("d13C\n")+ xlab("\nTreatment") +
-  scale_fill_discrete() +
+  ylab("Change in TOC after 16 weeks mg-C/ g-Dry soil\n")+ xlab("\nTemperature") +
   theme (
-    axis.text = element_text(size = 8)) 
-EXP1d13C_plot
+    axis.text = element_text(size = 8))+
+  facet_wrap(~Mulch)
+EXP1TOC0_plot
+```
+
+### Cumulative CO2 produced
+
+* PLA/PHA: 117 mgC mulch added / 100g soil = 1.17 mg C/gdry soil 
+* BioAgri: 142 mgC mulch added / 100g soil = 1.42 mg C/gdry soil
+* Cellulose: 112 mgC mulch added / 100g soil = 1.12 mg C/gdry soil 
+* Problem: CO2 respired does not include all soil carbon lost (is this an underestimate?)
+* Subtract the control from these graphs or leave it to compare to TOC graph  
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+#cumulative CO2 evoloved in units ugC/gdry soil after 16 weeks 
+
+EXP1CO2<-read_csv("../data/exp1cumco22.csv")
+
+# EXP1CO2 #show this in markdown
+
+#CO2 evolved table
+EXP1CO2_2<- EXP1CO2 %>%
+  group_by (Mulch,Temp)  %>%
+  na.omit %>%
+  summarise (avg = mean (CO2), n = length(CO2), sd = sd(CO2), 
+             se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+# EXP1CO2_2 #show this in markdown 
+
+#to make temp plot not continuous:
+
+EXP1CO2_2$Temp <- as.character(EXP1CO2_2$Temp)
+
+#1 plots of CO2 cumulative 
+EXP1CO2_plot<- EXP1CO2_2 %>%
+  ggplot(aes(x= Temp, y= avg)) + 
+  geom_bar(stat = "identity", fill="darkolivegreen4") + 
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  ylab("Cumulative CO2 evolved over 16 weeks mg-C/ g-Dry soil\n")+ xlab("\nTemperature") +
+  theme (
+    axis.text = element_text(size = 8))+
+  facet_wrap(~Mulch)
+plot (EXP1CO2_plot)
+
+```
+
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+
+#Probably not including this data
+
+#EXP1TOC<-read_csv("../data/exp1tocd13c.csv")
+
+#EXP1TOC$Temp <- as.character(EXP1TOC$Temp)
+
+###d13C table
+#EXP1d13C_2<- EXP1TOC %>%
+ # group_by (Mulch,Temp)  %>%
+  #summarise (avg = mean (d13C), n = length(d13C), sd = sd(d13C), 
+        #     se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+#kable(EXP1d13C_2)
+
+#EXP1d13C_plot<- EXP1d13C_2 %>%
+ # ggplot(aes(x= Mulch, y= avg, colour = Temp)) + 
+  #geom_point () +
+  #geom_bar(stat = "identity", fill="coral3") + 
+  #geom_errorbar((aes(ymax = ymax, ymin= ymin)), width=0.2) +
+  #ylab("d13C\n")+ xlab("\nTreatment") +
+  #scale_fill_discrete() +
+  #theme (
+   # axis.text = element_text(size = 8)) 
+#EXP1d13C_plot
 
 
 
@@ -156,6 +249,9 @@ EXP1d13C_plot
   <br>
   
 ### CO2 respiration 
+
+* All mulches have greater respiration than the no mulch control except for PLA/PHA at 10C 
+* Fierer 2005: Litter decomposition becomes more sensitive to temperature as litter organic C declines (Carbon loss as CO2 ranged from 16-52% of initial litter C)
 
 ```{r echo= FALSE, message= FALSE, warning= FALSE}
 co2evol<-read_csv("../data/redoco2evolved4.csv", col_types = cols(
@@ -228,29 +324,59 @@ co2evol_10
 <br>
   <br>
   
+  
+  
+### Q10 values 
+
+* Mulches are more sensitive to the temperature change from 10C to 20C than the increase from 20C to 30C
+* Help to understand the minimum temperature for performance of these mulches 
+* Q10 of microbial decomposition can vary by up to 40% depending on litter type 
+* Inverse relation between litter quality and Q10 of decomposition: "C quality-temp" hypothesis 
+
+```{r  echo= FALSE, message= FALSE, warning= FALSE}
+EXP1Q10<-read_csv("../data/exp1q10.csv")
+
+kable (EXP1Q10) 
+```
+
 ### Enzymes
 
-```{r echo= FALSE, message= FALSE, warning= FALSE}
-EXP1ENZ<-read_csv("../data/exp1enz.csv")
+* Change in enzyme activity after 16 weeks 
+* Phosphotase is temperature sensitive in BioAgri and Cellulose treatments 
+* Nagase activity increases during cellulose decomposition because microbes become N limited 
+* A decrease in enzyme activity after 16 weeks is the opposite of what would be expected for this experiment. 
+* Was Vmax achieved, are we out of enzymes because there is too much substrate?
+* Priming: CB increases
+* XYL: breaks down hemicellulose (plant wall)
+* BG: breaks down cellulose 
+* Large decrease in all cellulose enzymes after 16 weeks because it is all gone 
 
-EXP1ENZ$Temp <- as.character(EXP1ENZ$Temp)
+```{r echo= FALSE, message= FALSE, warning= FALSE}
+
+EXP1ENZ0<-read_csv("../data/exp1enz03.csv")
+
+EXP1ENZ0$Temp <- as.character(EXP1ENZ0$Temp)
 
 #Enzyme table
-EXP1ENZ_2<- EXP1ENZ %>%
+EXP1ENZ0_2<- EXP1ENZ0 %>%
   group_by (Mulch,Temp, Enzyme)  %>%
   summarise (avg = mean (Activity), n = length(Activity), sd = sd(Activity), 
              se = sd/sqrt(n), ymax = avg +se, ymin = avg -se)
+#EXP1ENZ0_2 
 
 #1 plots of ENZYMES 
-EXP1ENZ_plot<- EXP1ENZ_2 %>%
+EXP1ENZ0_plot<- EXP1ENZ0_2 %>%
   ggplot(aes(x= Mulch, y= avg, fill = Temp)) + 
   geom_bar(stat = "identity", position=position_dodge()) + 
-  geom_errorbar((aes(ymax = ymax, ymin= ymin)), position=position_dodge(0.9), width=0.2) +
-  ylab("Activity\n")+ xlab("\nMulch") +
+  geom_errorbar((aes(ymax = ymax, ymin= ymin)), position=position_dodge(.9), width=0.2) +
+  ylab("Activity\n")+ xlab("\nTemperature") +
   theme (
-    axis.text = element_text(size = 8))+
+    axis.text.x = element_text(size = 8, angle = 45))+
+  theme ( 
+    axis.text.y = element_text(size = 8)) + 
   facet_wrap(~Enzyme, scales = "free_y")
-EXP1ENZ_plot
+EXP1ENZ0_plot
+
 
 ```
 
